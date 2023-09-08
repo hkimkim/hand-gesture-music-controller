@@ -32,7 +32,6 @@ def create_directory(root_dir):
 
 def main():
 
-
     root_dir = TRAIN_IMG_DIR_PATH
 
     # Ask fo input

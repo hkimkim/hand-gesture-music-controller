@@ -20,8 +20,6 @@ from torchvision.models.detection.ssdlite import SSDLiteClassificationHead
 from functools import partial
 
 from preprocess import ImageDataset, xml_to_csv
-from vision.nn.multibox_loss import MultiboxLoss
-from vision.ssd.config import mobilenetv1_ssd_config
 
 # Set backend to cpu
 torch.backends.cudnn.enabled = False
@@ -108,7 +106,6 @@ def train(network, dataloader, optimizer, log_step, epoch):
 
         for i in range(len(images)):
 
-            # Extract bounding box and label
             ground_truth_bboxes = targets["boxes"][i]
             ground_truth_labels = targets["labels"][i]
 
@@ -123,7 +120,6 @@ def train(network, dataloader, optimizer, log_step, epoch):
         classification_loss =  losses["classification"]
 
         # Calcualte loss using multibox loss
-        # regression_loss, classification_loss = loss_fn(confidence, location, ground_truth_labels, ground_truth_bboxes)
         loss = regression_loss + classification_loss
 
         # Back propagation
@@ -163,7 +159,6 @@ def train(network, dataloader, optimizer, log_step, epoch):
 # Test the model (validation and test)
 def test(network, dataloader, data_name, isTest):
     
-    # I refactored code from pytorch torchvision library so taht train() returns prediction and losses
     network.train()
 
     correct = 0
@@ -243,7 +238,6 @@ def main():
     epochs = 50 
     log_step = 2
 
-    # Load transfered model
     network = load_model()
     
     optimizer = torch.optim.SGD(network.parameters(True), lr=learning_rate, momentum=momentum, weight_decay=weight_decay)
@@ -252,7 +246,6 @@ def main():
     train_dataloder, val_dataloader, test_dataloader = prepare_dataset(DATASET_DIR)
 
 
-    # Train + test
     for epoch in range(1, epochs + 1):
         train(network, train_dataloder, optimizer, log_step, epoch)
         avg_loss, avg_regression_loss, avg_classification_loss, accuracy = test(network, val_dataloader, "Val", False)
@@ -262,7 +255,6 @@ def main():
         writer.add_scalar(f'Val/Classification Loss', avg_classification_loss, epoch)
         writer.add_scalar(f'Val/Accuracy', accuracy, epoch)
 
-    # Accuracy score from inference
     test(network, test_dataloader, "Test", True)
 
     # Save model
@@ -271,6 +263,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-

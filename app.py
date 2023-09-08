@@ -14,14 +14,13 @@ import torchvision
 import torchvision.transforms as transforms
 from label_dict import index_to_label
 
+# Path to youtube music, which is the music streaming service I'll be using
 YOUTUBE_MUSIC_PATH = "/Users/heekyungkim/Applications/Chrome\ Apps.localized/YouTube\ Music.app"
-
 
 # Function to start youtube music app
 def start_youtube_music():
     path = YOUTUBE_MUSIC_PATH
     os.system(f"open {path}")
-
 
 
 # Function for operating youtube music with hot keys
